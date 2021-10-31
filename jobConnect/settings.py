@@ -1,6 +1,7 @@
 
 from datetime import timedelta
 from pathlib import Path
+import django_heroku
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -154,6 +155,12 @@ REST_FRAMEWORK = {
 SITE_ID = 1
 AUTH_USER_MODEL = 'register.CustomUser'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+django_heroku.settings(locals())
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
