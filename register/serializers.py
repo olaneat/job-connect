@@ -12,7 +12,7 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 from .models import CustomUser
 from userProfile.serializers import UserProfileSerializer
-
+from job.serializers import JobPostSerializer
 
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
@@ -75,10 +75,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
    # token = serializers.CharField(max_length=255, read_only=True)
     profile = UserProfileSerializer(required=False)
-
+    job_post = JobPostSerializer(required=False)
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'profile', 'password')
+        fields = ('email', 'job_post',  'profile', 'password')
 
     def create(self, validated_data):
         return CustomUser.objects._create_user(**validated_data)
