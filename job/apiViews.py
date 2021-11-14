@@ -13,7 +13,8 @@ class CreateJobPost(generics.CreateAPIView):
     permissions_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        id = self.request.user.id
+        id = self.request.user_id
+        print(id)
         queryset = JobPost.objects.filter(id=id)
         return queryset
 
@@ -27,9 +28,11 @@ class CreateJobPost(generics.CreateAPIView):
         res = {
             'message': 'Job Post Successfully Created',
             'status': status.HTTP_201_CREATED,
-            'header': headers,
             'serializer': serializer.data 
         }
 
         return Response(res)
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user.id)
         

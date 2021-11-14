@@ -75,7 +75,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
    # token = serializers.CharField(max_length=255, read_only=True)
     profile = UserProfileSerializer(required=False)
-    job_post = JobPostSerializer(required=False)
+    job_post = JobPostSerializer(required=False, many=True)
     class Meta:
         model = CustomUser
         fields = ('email', 'job_post',  'username', 'profile', 'password')
