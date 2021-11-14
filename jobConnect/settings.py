@@ -138,9 +138,7 @@ REST_FRAMEWORK = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
    ),
@@ -152,6 +150,10 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
     )
+
+    #'DEFAULT_PERMISSION_CLASSES': (
+      #  'rest_framework.permissions.IsAuthenticated',
+    #),
 
 }
 SITE_ID = 1
