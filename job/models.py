@@ -3,7 +3,7 @@ from register.models import CustomUser
 import uuid
 
 class JobPost(models.Model):
-    id= models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id= models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(CustomUser, related_name='job_posting', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
