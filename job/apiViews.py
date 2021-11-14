@@ -17,19 +17,4 @@ class CreateJobPost(generics.CreateAPIView):
         queryset = JobPost.objects.filter(id=id)
         return queryset
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            data=request.data, instance = request.user.job_posting.first()
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        res = {
-            'message': 'Job Post Successfully Created',
-            'status': status.HTTP_201_CREATED,
-            'header': headers,
-            'serializer': serializer.data 
-        }
-
-        return Response(res)
-        
+    
