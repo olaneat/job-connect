@@ -17,14 +17,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'username', 
             'uuid',
             'skills',
-            'education_level', 
-            'display_picture',
+            'educationLevel', 
+            'displayPicture',
             'email',
-            'phone_number',
-            'n_i_n',
-            'first_name',
+            'phoneNumber',
+            'ninNumber',
+            'firstName',
             'surname',
-            'date_of_birth'
+            'dateOfBirth'
         )
     def create(self, validated_data, instance=None):
         if 'user' in validated_data:
