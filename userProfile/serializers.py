@@ -6,7 +6,8 @@ from register.models import CustomUser
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", read_only=True)
     uuid= serializers.UUIDField(format='hex_verbose', source="user.id", read_only=True)
-    parser_class = (
+    queryset = UserProfile.objects.all()
+    parser_classes = (
         MultiPartParser,
         FormParser
     )
@@ -24,7 +25,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'ninNumber',
             'firstName',
             'surname',
-            'dateOfBirth'
+            'dateOfBirth',
+            'categories'
         )
     def create(self, validated_data, instance=None):
         if 'user' in validated_data:

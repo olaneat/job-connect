@@ -13,6 +13,7 @@ class UserProfile(models.Model):
     email = models.EmailField()
     phoneNumber = models.CharField(max_length=15)
     ninNumber = models.CharField(max_length=25)
+    categories = models.CharField(max_length=255)
     skills = models.TextField()
     educationLevel = models.CharField(max_length=150)
 
