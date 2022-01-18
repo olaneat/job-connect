@@ -40,8 +40,9 @@ class DisplayUserList(generics.ListAPIView):
 class UpdateProfile(generics.UpdateAPIView):
     lookup_field = 'user_id'
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
+    permissions_classes = [IsAuthenticatedOrReadOnly]
+
 
 
 class RetrieveProfile(generics.RetrieveAPIView):

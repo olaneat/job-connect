@@ -14,7 +14,8 @@ class UserProfile(models.Model):
     phoneNumber = models.CharField(max_length=15)
     ninNumber = models.CharField(max_length=25)
     categories = models.CharField(max_length=255)
-    skills = models.TextField()
+    skills = models.CharField(max_length=255)
+    subSkills = models.TextField()
     educationLevel = models.CharField(max_length=150)
 
 @receiver(post_save, sender=CustomUser)

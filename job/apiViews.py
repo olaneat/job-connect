@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import query
 from .models import JobPost
-from .serializers import JobSerializer
+from rest_framework import filters
+from .serializers import JobSerializer, JobSearchSerializer
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import status
@@ -40,6 +41,11 @@ class JobListAPI(generics.ListAPIView):
     serializer_class = JobSerializer
     queryset = JobPost.objects.all()
     permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ['skills_required']
+    
+
+
 
 class DisplayJobById(generics.RetrieveAPIView):
     lookup_field = 'id'
@@ -48,14 +54,15 @@ class DisplayJobById(generics.RetrieveAPIView):
     queryset = JobPost.objects.all()
 
     
-
+   
 
 
 class UpdateJob(generics.UpdateAPIView):
     lookup_field = 'id'
     serializer_class = JobSerializer
     queryset = JobPost.objects.all()
-    permissions_classes = [permissions.IsAuthenticated]
+    permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     
     
     

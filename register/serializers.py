@@ -44,7 +44,7 @@ class LoginSerializer(serializers.Serializer):
         return {
             'email': user.email,
             'id': user.id,
-            'token': jwt_token
+            'token': jwt_token,
         }
         '''if password is None:
             raise serializers.ValidationError(
