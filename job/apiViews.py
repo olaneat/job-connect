@@ -42,7 +42,7 @@ class JobListAPI(generics.ListAPIView):
     queryset = JobPost.objects.all()
     permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = (filters.SearchFilter,)
-    search_fields = ['skills_required']
+    search_fields = ['sub_category']
     
 
 

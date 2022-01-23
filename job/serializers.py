@@ -7,7 +7,16 @@ class JobSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = JobPost
-        fields = ['user', 'user_id', 'id', 'title', 'description', 'budget', 'deadline','skills_required']
+        fields = ['user',
+                    'user_id',
+                    'id', 
+                    'title', 
+                    'description', 
+                    'budget', 
+                    'budget_type',
+                    'deadline',
+                    'category',
+                    'sub_category']
 
 
 class JobSearchSerializer(serializers.ModelSerializer):
