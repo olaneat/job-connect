@@ -47,6 +47,15 @@ class JobListAPI(generics.ListAPIView):
 
 
 
+class JobListByUser(generics.ListAPIView):
+    serializer_class = JobSearchSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        user_id = self.request.user_id
+        queryset = JobPost.objects.filter(id=user_id)
+        return queryset
+
 class DisplayJobById(generics.RetrieveAPIView):
     lookup_field = 'id'
     serializer_class = JobSerializer
