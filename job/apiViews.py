@@ -1,4 +1,3 @@
-from asyncio import Task
 from .models import JobPost, Proposal
 from rest_framework import filters
 from django.http import Http404, HttpResponse
@@ -70,10 +69,12 @@ class  ProposalAPIView(generics.CreateAPIView):
     queryset = Proposal.objects.all()
     permissions_classes = [permissions.IsAuthenticated]
 
+    '''
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
             data = request.data
         )
+        print(serializer)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         res = {
@@ -84,14 +85,9 @@ class  ProposalAPIView(generics.CreateAPIView):
     
         return res
     def perform_create(self, serializer):
-        try:
-            task = Task.object.get(id=self.request.user.task.id)
-        except Task.DoesNotExist:
-            raise Http404
-        if self.request.user.is_authenticated():
-            serializer.save(task=task)
-        serializer.save()
-
+        serializer.save(task=self.request.user.task.proposal)
+    '''
+        
 class UpdateJob(generics.UpdateAPIView):
     lookup_field = 'id'
     serializer_class = JobSerializer

@@ -6,13 +6,14 @@ from .models import JobPost, Proposal
 class JobSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True )
     user_id = serializers.CharField(source='user.id', read_only=True)
-    
+    proposal = serializers.StringRelatedField(many=True, read_only=True)     
     class Meta:
         model = JobPost
         fields = [
                     'user',
                     'user_id',
                     'id', 
+                    'proposal',
                     'title', 
                     'description', 
                     'budget', 
@@ -33,14 +34,15 @@ class JobSearchSerializer(serializers.ModelSerializer):
 
 
 class ProposalSerializer(serializers.ModelSerializer):
-    task = serializers.CharField(source='task.title', read_only=True)
+    task = JobSerializer(many=True, read_only=True)
     user = serializers.CharField(source='user.username',read_only=True)
 
     class Meta:
         model = Proposal
         fields = [
             'task',
-            'proposal',
+            'id',
+            'proposal_description',
             'duration',
             'bid',
             'upload',

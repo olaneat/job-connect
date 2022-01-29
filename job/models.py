@@ -4,7 +4,7 @@ import uuid
 
 class JobPost(models.Model):
     id= models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    user = models.ForeignKey(CustomUser, related_name='job_posting', on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, related_name='users', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
     sub_category = models.TextField()
@@ -27,7 +27,7 @@ class JobPost(models.Model):
 class Proposal(models.Model):
     user = models.OneToOneField(CustomUser, related_name="user", on_delete=models.CASCADE)
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='task')
+    task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='proposal')
     duration = models.CharField(max_length=150)
     upload = models.FileField(upload_to='media/proposal', blank=True, null=True)
     proposal_description = models.TextField()
