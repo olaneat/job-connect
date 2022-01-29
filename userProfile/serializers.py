@@ -23,8 +23,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'email',
             'phoneNumber',
             'ninNumber',
+            'countryBase',
             'firstName',
             'surname',
+            'subSkills',
             'dateOfBirth',
             'categories'
         )
