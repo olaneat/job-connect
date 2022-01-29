@@ -23,3 +23,21 @@ class JobPost(models.Model):
         return self.title
 
 
+
+class Proposal(models.Model):
+    user = models.OneToOneField(CustomUser, related_name="user", on_delete=models.CASCADE)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='task')
+    duration = models.CharField(max_length=150)
+    upload = models.FileField(upload_to='media/proposal', blank=True, null=True)
+    proposal_description = models.TextField()
+    bid = models.CharField(max_length=140)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Prosposal'
+        verbose_name_plural = ' Proposals'
+        ordering = ['-created_at']
+
+    def __str(self):
+        return self.username

@@ -1,5 +1,7 @@
+from asyncore import read
+from pyexpat import model
 from rest_framework import serializers 
-from .models import JobPost
+from .models import JobPost, Proposal
 
 class JobSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True )
@@ -7,7 +9,8 @@ class JobSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = JobPost
-        fields = ['user',
+        fields = [
+                    'user',
                     'user_id',
                     'id', 
                     'title', 
@@ -16,7 +19,9 @@ class JobSerializer(serializers.ModelSerializer):
                     'budget_type',
                     'deadline',
                     'category',
-                    'sub_category']
+                    'sub_category',
+                    'created_on'
+                ]
 
 
 class JobSearchSerializer(serializers.ModelSerializer):
@@ -24,3 +29,21 @@ class JobSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPost
         fields = ['user', 'id', 'title', 'description', 'budget', 'deadline']
+
+
+
+class ProposalSerializer(serializers.ModelSerializer):
+    task = serializers.CharField(source='task.title', read_only=True)
+    user = serializers.CharField(source='user.username',read_only=True)
+
+    class Meta:
+        model = Proposal
+        fields = [
+            'task',
+            'proposal',
+            'duration',
+            'bid',
+            'upload',
+            'user',
+            'created_at'
+        ]

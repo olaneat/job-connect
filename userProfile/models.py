@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     dateOfBirth = models.DateField(blank=True,null=True)
     displayPicture = models.ImageField(upload_to='media/dp', blank=True, null=True)
     email = models.EmailField()
+    countryBase = models.CharField(max_length=200)
     phoneNumber = models.CharField(max_length=15)
     ninNumber = models.CharField(max_length=25)
     categories = models.CharField(max_length=255)

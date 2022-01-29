@@ -1,8 +1,8 @@
-from django.db import models
-from django.db.models import query
-from .models import JobPost
+from asyncio import Task
+from .models import JobPost, Proposal
 from rest_framework import filters
-from .serializers import JobSerializer, JobSearchSerializer
+from django.http import Http404, HttpResponse
+from .serializers import JobSerializer, JobSearchSerializer, ProposalSerializer
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import status
@@ -62,9 +62,35 @@ class DisplayJobById(generics.RetrieveAPIView):
     permissions_classes = [permissions.IsAuthenticated]
     queryset = JobPost.objects.all()
 
-    
    
 
+class  ProposalAPIView(generics.CreateAPIView):
+    serializer_class = ProposalSerializer
+    look_up = 'id',
+    queryset = Proposal.objects.all()
+    permissions_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data = request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        res = {
+            'msg': 'Your proposal have been successfully Submitted',
+            'status': status.HTTP_201_CREATED,
+            'serializer' : serializer.data
+        }
+    
+        return res
+    def perform_create(self, serializer):
+        try:
+            task = Task.object.get(id=self.request.user.task.id)
+        except Task.DoesNotExist:
+            raise Http404
+        if self.request.user.is_authenticated():
+            serializer.save(task=task)
+        serializer.save()
 
 class UpdateJob(generics.UpdateAPIView):
     lookup_field = 'id'
