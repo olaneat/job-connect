@@ -1,5 +1,10 @@
+from asyncio import Task, tasks
+import re
+from register.models import CustomUser
 from .models import JobPost, Proposal
 from rest_framework import filters
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
 from django.http import Http404, HttpResponse
 from .serializers import JobSerializer, JobSearchSerializer, ProposalSerializer
 from rest_framework import generics
@@ -61,33 +66,7 @@ class DisplayJobById(generics.RetrieveAPIView):
     permissions_classes = [permissions.IsAuthenticated]
     queryset = JobPost.objects.all()
 
-   
 
-class  ProposalAPIView(generics.CreateAPIView):
-    serializer_class = ProposalSerializer
-    look_up = 'id',
-    queryset = Proposal.objects.all()
-    permissions_classes = [permissions.IsAuthenticated]
-
-    '''
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            data = request.data
-        )
-        print(serializer)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        res = {
-            'msg': 'Your proposal have been successfully Submitted',
-            'status': status.HTTP_201_CREATED,
-            'serializer' : serializer.data
-        }
-    
-        return res
-    def perform_create(self, serializer):
-        serializer.save(task=self.request.user.task.proposal)
-    '''
-        
 class UpdateJob(generics.UpdateAPIView):
     lookup_field = 'id'
     serializer_class = JobSerializer
@@ -95,5 +74,39 @@ class UpdateJob(generics.UpdateAPIView):
     permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     
+
+class  SubmitProposalAPIView(generics.CreateAPIView):
+    serializer_class = ProposalSerializer
+    look_up = 'id',
+    queryset = Proposal.objects.all()
+    permissions_classes = [permissions.IsAuthenticated]
+
+    
+    
+
+'''
+   
+@api_view(['GET', 'POST'])
+def submitProposalAPIView(request, id, **validated_data):
+    task = get_object_or_404(JobPost, id=id)
+    print(id)
+    if request.method == 'POST':
+        serializer = ProposalSerializer(data=request.data)
+        if serializer.is_valid(**validated_data):
+            proposal = serializer.save(id=id)
+            proposal.task = task
+            proposal.save()
+            res = {
+                'message': 'Proposal Submitted Successfully',
+                'status': status.HTTP_200_OK,
+                serializer : serializer.data
+            }
+            return Response(res)
+    else:
+        serializer = ProposalSerializer()
+    return Response({'request':request, 'serializer': serializer})
+
+''' 
+        
     
     

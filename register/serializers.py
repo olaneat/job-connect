@@ -75,10 +75,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
    # token = serializers.CharField(max_length=255, read_only=True)
     profile = UserProfileSerializer(required=False)
-    job_posting = JobSerializer(required=False, many=True, read_only=True)
+    task = JobSerializer(required=False, many=True, read_only=True)
     class Meta:
         model = CustomUser
-        fields = ('email', 'job_posting',  'username', 'profile', 'password')
+        fields = ('email', 'task',  'username', 'profile', 'password')
 
     def create(self, validated_data):
         return CustomUser.objects._create_user(**validated_data)
