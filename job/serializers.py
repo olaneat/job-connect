@@ -25,14 +25,14 @@ class ProposalSerializer(serializers.ModelSerializer):
 class JobSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True )
     user_id = serializers.CharField(source='user.id', read_only=True)
-    task = ProposalSerializer(many=True, read_only=True)     
+    proposal = ProposalSerializer(many=True, read_only=True)     
     class Meta:
         model = JobPost
         fields = [
                     'user',
                     'user_id',
                     'id', 
-                    'task',
+                    'proposal',
                     'title', 
                     'description', 
                     'budget', 
@@ -42,11 +42,14 @@ class JobSerializer(serializers.ModelSerializer):
                     'sub_category',
                     'created_on'
                 ]
+    
 
+    
     '''
+    
     def create(self, validated_data):
-        if 'proposals' in validated_data:
-            proposals_data = validated_data.pop('proposals')
+        if 'proposal' in validated_data:
+            proposals_data = validated_data.pop('proposal')
         else:
             proposal = Proposal.objects.create(**validated_data)
         task = JobPost.objects.update_or_create(
@@ -54,8 +57,6 @@ class JobSerializer(serializers.ModelSerializer):
         )
         return task
 
-
-    
     
     
     '''

@@ -1,5 +1,6 @@
 from asyncio import Task, tasks
 import re
+from trace import Trace
 from register.models import CustomUser
 from .models import JobPost, Proposal
 from rest_framework import filters
@@ -83,6 +84,21 @@ class  SubmitProposalAPIView(generics.CreateAPIView):
 
     
     
+
+@api_view(['GET'])
+def getUserTaskList(request, id):
+    if request.method == 'GET':
+        tasks = JobPost.objects.filter(user_id=id)
+        serializer = JobSerializer(tasks, many=True)
+
+        res = {
+            'message': '',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data         
+        }
+
+        return Response(res)
+
 
 '''
    
