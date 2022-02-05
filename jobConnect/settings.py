@@ -78,7 +78,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'LOCALHOST',
-        'NAME':  'job_connect',
+        'NAME':  'job_konnect',
         'USERNAME': os.environ.get('DB_USERNAME'),
         'PASSWORD': os.environ.get('DB_PASSWORD')
     }
