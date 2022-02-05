@@ -117,6 +117,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 CORS_ALLOWED_ORIGINS = ["http://localhost:4200"]
 
 # Static files (CSS, JavaScript, Images)
