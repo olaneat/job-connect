@@ -66,7 +66,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.email
+        return self.username
 
     @property
     def token(self):

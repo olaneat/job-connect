@@ -78,7 +78,11 @@ class LoginAPIView(RetrieveAPIView):
                     'status_code': status.HTTP_200_OK,
                     'message': 'login successful',
                     'token':  serializer.data['token'],
-                    'id': self.request.user.id
+                    'firstName': self.request.user.user_profile.firstName,
+                    'surname': self.request.user.user_profile.surname,
+                    'id': self.request.user.id,
+                    'skills': self.request.user.user_profile.skills
+
                 }
                 status_code = status.HTTP_200_OK
                 return Response(response, status=status_code)

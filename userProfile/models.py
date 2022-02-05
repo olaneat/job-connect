@@ -6,15 +6,18 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, related_name='user_profile', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=150)
+    firstName = models.CharField(max_length=150)
     surname = models.CharField(max_length=150)
-    date_of_birth = models.DateField(blank=True,null=True)
-    display_picture = models.ImageField(upload_to='media/dp')
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
-    n_i_n = models.CharField(max_length=25)
-    skills = models.TextField()
-    education_level = models.CharField(max_length=150)
+    dateOfBirth = models.DateField(blank=True,null=True)
+    displayPicture = models.ImageField(upload_to='media/dp', blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    countryBase = models.CharField(max_length=200, blank=True, null=True)
+    phoneNumber = models.CharField(max_length=15, blank=True, null=True)
+    ninNumber = models.CharField(max_length=25, blank=True, null=True)
+    categories = models.CharField(max_length=255, blank=True, null=True)
+    skills = models.CharField(max_length=255, blank=True, null=True)
+    subSkills = models.TextField(blank=True, null=True)
+    educationLevel = models.CharField(max_length=150, blank=True, null=True)
 
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender, instance, created, **kwargs):

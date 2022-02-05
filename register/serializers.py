@@ -44,7 +44,7 @@ class LoginSerializer(serializers.Serializer):
         return {
             'email': user.email,
             'id': user.id,
-            'token': jwt_token
+            'token': jwt_token,
         }
         '''if password is None:
             raise serializers.ValidationError(
@@ -75,10 +75,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
    # token = serializers.CharField(max_length=255, read_only=True)
     profile = UserProfileSerializer(required=False)
-    job_post = JobSerializer(required=False, many=True)
+    task = JobSerializer(required=False, many=True, read_only=True)
     class Meta:
         model = CustomUser
-        fields = ('email', 'job_post',  'username', 'profile', 'password')
+        fields = ('email', 'task',  'username', 'profile', 'password')
 
     def create(self, validated_data):
         return CustomUser.objects._create_user(**validated_data)

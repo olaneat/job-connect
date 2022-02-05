@@ -23,11 +23,14 @@ class createProfileView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status =status.HTTP_201_CREATED,
-            headers= headers
-        )
+        res  = {
+            'msg' : 'Profile successfully created',
+            'status':status.HTTP_201_CREATED,
+            'headers': headers,
+            'data': serializer.data,
+            
+        }
+        return Response(res)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -40,8 +43,9 @@ class DisplayUserList(generics.ListAPIView):
 class UpdateProfile(generics.UpdateAPIView):
     lookup_field = 'user_id'
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
+    permissions_classes = [IsAuthenticatedOrReadOnly]
+
 
 
 class RetrieveProfile(generics.RetrieveAPIView):

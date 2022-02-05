@@ -2,11 +2,15 @@ from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser, MultiPartParser, FormParser
 from .models import UserProfile
 from register.models import CustomUser
-
+from job.serializers import JobSerializer
+ 
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", read_only=True)
     uuid= serializers.UUIDField(format='hex_verbose', source="user.id", read_only=True)
-    parser_class = (
+    queryset = UserProfile.objects.all()
+    #users = serializers.StringRelatedField(many=True, read_only=True)
+
+    parser_classes = (
         MultiPartParser,
         FormParser
     )
@@ -17,15 +21,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'username', 
             'uuid',
             'skills',
-            'education_level', 
-            'display_picture',
+            'educationLevel', 
+            'displayPicture',
             'email',
-            'phone_number',
-            'n_i_n',
-            'first_name',
+            'phoneNumber',
+            'ninNumber',
+            'countryBase',
+            'firstName',
             'surname',
-            'date_of_birth'
+            'subSkills',
+            'dateOfBirth',
+            'categories'
         )
+    
     def create(self, validated_data, instance=None):
         if 'user' in validated_data:
             user = validated_data.pop('user')
