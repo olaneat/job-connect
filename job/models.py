@@ -25,7 +25,8 @@ class JobPost(models.Model):
 
 
 class Proposal(models.Model):
-    task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='proposal' )
+    # task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='proposal' )
+    task = models.IntergerField(null=True, blank=True, editable=False)
     user = models.OneToOneField(CustomUser, related_name="user", on_delete=models.CASCADE)
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False,)
     duration = models.CharField(max_length=150)
@@ -37,6 +38,10 @@ class Proposal(models.Model):
         verbose_name = 'Prosposal'
         verbose_name_plural = ' Proposals'
         ordering = ['-created_at']
+        
+    def save(self, *args, **kwargs):
+        self.task = 1 # this should be the JobPost ID
+        super(Proposal, self).save(*args, **kwargs)
 
     def __str(self):
         return self.username
