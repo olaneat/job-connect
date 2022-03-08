@@ -1,5 +1,3 @@
-from register import permissions, serializers
-from register.models import CustomUser
 from .models import UserProfile
 from .serializers import UserProfileSerializer
 from rest_framework.parsers import  MultiPartParser, FormParser
@@ -54,3 +52,6 @@ class RetrieveProfile(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
     
+
+
+

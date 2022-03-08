@@ -10,6 +10,7 @@ class JobPost(models.Model):
     sub_category = models.TextField()
     description = models.TextField()
     budget_type = models.CharField(max_length=100)
+    location = models.CharField(max_length=200, blank=True, null=True)
     deadline = models.DateField(blank=True, null=True, auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)
     budget = models.CharField(max_length=255)
@@ -40,3 +41,15 @@ class Proposal(models.Model):
 
     def __str(self):
         return self.username
+
+
+
+class SaveJobs(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='saved_jobs')
+    title = models.CharField(max_length=255)
+    saved_on = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name = 'Saved Job'
+        verbose_name_plural = ' Saved Jobs'
+        ordering = [ '-saved_on', 'title']
+    

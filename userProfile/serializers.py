@@ -27,6 +27,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'phoneNumber',
             'ninNumber',
             'countryBase',
+            'linkedln_url',
+            'twitter_url',
             'firstName',
             'surname',
             'subSkills',

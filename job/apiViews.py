@@ -1,13 +1,11 @@
-from asyncio import Task, tasks
-import re
-from trace import Trace
+from register import serializers
 from register.models import CustomUser
-from .models import JobPost, Proposal
+from .models import JobPost, Proposal, SaveJobs
 from rest_framework import filters
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django.http import Http404, HttpResponse
-from .serializers import JobSerializer, JobSearchSerializer, ProposalSerializer
+from .serializers import JobSerializer, SavedJobSerializer, ProposalSerializer
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import status
@@ -48,17 +46,18 @@ class JobListAPI(generics.ListAPIView):
     permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ['sub_category']
-    
+    ordering = ['-created_on']
 
 
 
 class JobListByUser(generics.ListAPIView):
-    serializer_class = JobSearchSerializer
+    serializer_class = JobSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         user_id = self.request.user_id
         queryset = JobPost.objects.filter(id=user_id)
+        ordering = ['-created_on']
         return queryset
 
 class DisplayJobById(generics.RetrieveAPIView):
@@ -74,7 +73,13 @@ class UpdateJob(generics.UpdateAPIView):
     queryset = JobPost.objects.all()
     permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    
+
+class DeleteTaskAPI(generics.DestroyAPIView):
+    lookup_field = 'id'
+    serializer_class = JobSerializer
+    queryset = JobPost.objects.all()
+    permissions_classes = [permissions.IsAuthenticated]
+
 
 class  SubmitProposalAPIView(generics.CreateAPIView):
     serializer_class = ProposalSerializer
@@ -82,8 +87,23 @@ class  SubmitProposalAPIView(generics.CreateAPIView):
     queryset = Proposal.objects.all()
     permissions_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        res = {
+            'message': 'review has been successfully Submitted',
+            'status': status.HTTP_201_CREATED,
+            'serializer': serializer.data
+        }
+        
+        return Response(res)
     
-    
+    def perform_create(self, serializer):
+       serializer.save(user=self.request.user)
 
 @api_view(['GET'])
 def getUserTaskList(request, id):
@@ -92,7 +112,7 @@ def getUserTaskList(request, id):
         serializer = JobSerializer(tasks, many=True)
 
         res = {
-            'message': '',
+            'message': 'Tasks Fetched Successfully',
             'status': status.HTTP_200_OK,
             'data': serializer.data         
         }
@@ -100,16 +120,14 @@ def getUserTaskList(request, id):
         return Response(res)
 
 
-'''
-   
 @api_view(['GET', 'POST'])
 def submitProposalAPIView(request, id, **validated_data):
     task = get_object_or_404(JobPost, id=id)
-    print(id)
+    print(task)
     if request.method == 'POST':
         serializer = ProposalSerializer(data=request.data)
         if serializer.is_valid(**validated_data):
-            proposal = serializer.save(id=id)
+            proposal = serializer.save()
             proposal.task = task
             proposal.save()
             res = {
@@ -122,7 +140,51 @@ def submitProposalAPIView(request, id, **validated_data):
         serializer = ProposalSerializer()
     return Response({'request':request, 'serializer': serializer})
 
-''' 
-        
-    
-    
+@api_view(['GET'])
+def ListSavedJobView(request):
+    if request.method == 'GET':
+        id = request.user.id
+        print(request.user)
+        tasks = SaveJobs.objects.all()
+        serializer = SavedJobSerializer(tasks, many=True)
+        res = {
+            'msg': 'data fetched successfully',
+            'status': status.HTTP_200_OK,
+            'serializer' : serializer.data
+        }
+
+        return Response(res)
+
+
+class DeleteSavedJobs(generics.DestroyAPIView):
+    lookup_field = 'id'
+    permissions_classes = [permissions.IsAuthenticated]
+    serializers = SavedJobSerializer
+    queryset = SaveJobs.objects.all()
+
+
+class SaveJobView(generics.CreateAPIView):
+    lookup_field = 'id'
+    permissions_classes = [permissions.IsAuthenticated]
+    serializer_class = SavedJobSerializer
+    queryset =  SaveJobs.objects.all()
+
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        res = {
+            'message': 'Job Post Successfully Saved',
+            'status': status.HTTP_200_OK,
+            'data': serializer.data 
+        }
+
+        return Response(res)
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user.id)
