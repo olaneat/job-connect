@@ -27,7 +27,7 @@ class JobPost(models.Model):
 
 class Proposal(models.Model):
     task = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='proposal' )
-    user = models.OneToOneField(CustomUser, related_name="user", on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, related_name="user", on_delete=models.CASCADE)
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False,)
     duration = models.CharField(max_length=150)
     proposal_description = models.TextField()

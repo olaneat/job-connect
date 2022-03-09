@@ -1,11 +1,10 @@
-from register import serializers
-from register.models import CustomUser
+from email import message
 from .models import JobPost, Proposal, SaveJobs
 from rest_framework import filters
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django.http import Http404, HttpResponse
-from .serializers import JobSerializer, SavedJobSerializer, ProposalSerializer
+from .serializers import JobSerializer, SavedJobSerializer, ProposalSerializer, ListPropalSerializer
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import status
@@ -87,23 +86,27 @@ class  SubmitProposalAPIView(generics.CreateAPIView):
     queryset = Proposal.objects.all()
     permissions_classes = [permissions.IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(
-            data=request.data
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        res = {
-            'message': 'review has been successfully Submitted',
-            'status': status.HTTP_201_CREATED,
-            'serializer': serializer.data
-        }
-        
-        return Response(res)
+
+    def post(self, request, id, *args, **kwargs):
+        task = get_object_or_404(JobPost, id=id)
+        serializers = ProposalSerializer(data= request.data)
+        if serializers.is_valid(raise_exception=True):
+            serializers.save(user=request.user, task=task)
+            return Response(serializers.data, message = 'proposal submited successfully', status=status.HTTP_200_OK)
+        else:
+            return Response("error", serializers.error, status=400)
+
+
+class ListProposalsView(generics.ListAPIView):
     
-    def perform_create(self, serializer):
-       serializer.save(user=self.request.user)
+    def  get(self, request, id ):
+        task =  JobPost.objects.get(id =id)
+        queryset = Proposal.objects.filter(task=task)
+        serializer = ListPropalSerializer(queryset, many=True)
+        permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 @api_view(['GET'])
 def getUserTaskList(request, id):
@@ -120,25 +123,7 @@ def getUserTaskList(request, id):
         return Response(res)
 
 
-@api_view(['GET', 'POST'])
-def submitProposalAPIView(request, id, **validated_data):
-    task = get_object_or_404(JobPost, id=id)
-    print(task)
-    if request.method == 'POST':
-        serializer = ProposalSerializer(data=request.data)
-        if serializer.is_valid(**validated_data):
-            proposal = serializer.save()
-            proposal.task = task
-            proposal.save()
-            res = {
-                'message': 'Proposal Submitted Successfully',
-                'status': status.HTTP_200_OK,
-                serializer : serializer.data
-            }
-            return Response(res)
-    else:
-        serializer = ProposalSerializer()
-    return Response({'request':request, 'serializer': serializer})
+
 
 @api_view(['GET'])
 def ListSavedJobView(request):

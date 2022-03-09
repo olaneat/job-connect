@@ -4,8 +4,6 @@ from .models import JobPost, Proposal, SaveJobs
 
 
 class ProposalSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username',read_only=True)
-    task = serializers.CharField(source='proposal.title', read_only=True) 
     class Meta:
         model = Proposal
         fields = [
@@ -13,13 +11,22 @@ class ProposalSerializer(serializers.ModelSerializer):
             'proposal_description',
             'duration',
             'bid',
-            'user',
-            'task',
             'created_at'
         ]
 
   
-    
+class ListPropalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proposal
+        fields = [
+            'user',
+            'task',
+            'id',
+            'proposal_description',
+            'duration',
+            'bid',
+            'created_at'
+        ]
 
 class JobSerializer(serializers.ModelSerializer):
     user_id = serializers.CharField(source='user.id', read_only=True)
@@ -38,6 +45,7 @@ class JobSerializer(serializers.ModelSerializer):
                     'budget_type',
                     'deadline',
                     'category',
+                    'location',
                     'sub_category',
                     'created_on',
                     'firstname',
