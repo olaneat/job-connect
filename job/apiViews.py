@@ -99,10 +99,19 @@ class  SubmitProposalAPIView(generics.CreateAPIView):
             return Response("error", serializers.error, status=400)
 
 
-class ListProposalsView(generics.ListAPIView):
+class UserProposalListView(generics.ListAPIView):
     
     def  get(self, request, id ):
         queryset = Proposal.objects.filter(user=id).order_by('-created_at')
+        serializer = ListPropalSerializer(queryset, many=True)
+        permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListProposalsView(generics.ListAPIView):
+    
+    def  get(self, request, id ):
+        queryset = Proposal.objects.filter(task=id).order_by('-created_at')
         serializer = ListPropalSerializer(queryset, many=True)
         permissions_classes = [permissions.IsAuthenticatedOrReadOnly]
         return Response(serializer.data, status=status.HTTP_200_OK)

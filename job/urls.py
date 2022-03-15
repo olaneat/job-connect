@@ -14,6 +14,7 @@ from .apiViews import (
     GetUserProposalsView,
     DeleteProposalView,
     UpdateProposalView,
+    UserProposalListView,
 
 )
 from . import apiViews
@@ -28,6 +29,7 @@ urlpatterns = [
     path('<uuid:id>/delete', DeleteTaskAPI.as_view(), name="delete-task"),
     path('<uuid:id>/submit_proposal', SubmitProposalAPIView.as_view(), name="make-proposal"),
     path('<uuid:id>/display_proposals', ListProposalsView.as_view(), name="display-proposal"),
+    path('<uuid:id>/display_user_proposals', UserProposalListView.as_view(), name="display-proposal"), 
     path('saved-task-list', ListSavedJobView, name='display-saved-task'),
     path('save-task', SaveJobView.as_view(), name='saved-job'),
     path('<uuid:id>/proposal_list', GetUserProposalsView, name='proposa-list'),
