@@ -1,4 +1,3 @@
-from email import message
 from .models import JobPost, Proposal, SaveJobs
 from rest_framework import filters
 from django.shortcuts import get_object_or_404
@@ -7,8 +6,10 @@ from django.http import Http404, HttpResponse
 from .serializers import JobSerializer, SavedJobSerializer, ProposalSerializer, ListPropalSerializer
 from rest_framework import generics
 from rest_framework import permissions
+from utils import Utils
 from rest_framework import status
 from rest_framework.response import Response
+from register.models import CustomUser
 
 from job import serializers
 
@@ -19,7 +20,6 @@ class CreateJobPost(generics.CreateAPIView):
 
     def get_queryset(self):
         id = self.request.user_id
-        print(id)
         queryset = JobPost.objects.filter(id=id)
         return queryset
 
@@ -213,3 +213,28 @@ def GetUserProposalsView(request, id):
 
     return Response(res)
 
+
+@api_view(['POST'])
+def sendMail(request):
+    if request.method == 'POST':
+        email = request.data['recieptient']
+        if CustomUser.objects.filter(email=email).exists():
+            user = CustomUser.objects.get(email=email)
+            subject = 'Proposal Accepted'
+            title = request.data['title']
+            body = 'Congrats', user.user_profile.firstName, user.user_profile.surname,  \
+                'Your Proposal', title,  \
+                'for the  Has Been accepted'
+            
+            data = {
+                'recieptient':user.email,
+                'subject': subject,
+                'body':body,
+            }
+            Utils.send_mail(data)
+
+            res = {
+                'msg': 'Notifcation sent successfully',
+                'status': status.HTTP_200_OK,
+            }
+            return Response(res)

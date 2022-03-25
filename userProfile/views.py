@@ -53,7 +53,6 @@ class RetrieveProfile(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
-    print(queryset)
  
 
 
