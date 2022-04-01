@@ -1,7 +1,6 @@
-from django.db.models import query
-from register import models
+
 from rest_framework.response import Response
-import json
+
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 from rest_framework import generics, viewsets, status
@@ -137,8 +136,8 @@ class RequestPasswordResetAPIView(generics.GenericAPIView):
                 'register:password-reset-confirmed', kwargs={'uidb64': uidb64, 'token': token})
             django_absUrl = 'http://' + current_site + dRelativeLink
 
-            local_host = 'http://localhost:4200/#/account/'
-            relativeLink = 'update-password/'+uidb64+' /'+token
+            local_host = 'http://localhost:4200/account/'
+            relativeLink = 'change-password/'+uidb64+' /'+token
             absUrl = local_host+relativeLink
             body = 'Hi  Click on the Link below to change your password \n' + absUrl
             data = {

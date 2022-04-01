@@ -1,15 +1,13 @@
-from django.db.models import fields
+
 from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import update_last_login
-from django.contrib.auth.hashers import make_password
 from rest_framework.response import Response
 from django.utils.encoding import smart_str, force_str, DjangoUnicodeDecodeError, smart_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from rest_framework_jwt.settings import api_settings
-from django.contrib.auth.models import User
 from .models import CustomUser
 from userProfile.serializers import UserProfileSerializer
 from job.serializers import JobSerializer
@@ -103,6 +101,18 @@ class RequestNewPasswordSerializer(serializers.Serializer):
     class Meta:
         fields = ['email']
 
+    def validate(self, attrs):
+        try:
+            email = attrs.get('email', '')
+            if CustomUser.objects.filter(email=email).exists(): 
+                user=CustomUser.objects.get(email=email)
+                uidb64 = urlsafe_base64_encode(user.id)
+                token = PasswordResetTokenGenerator.make_token(user)
+            return attrs
+            
+        except expression as identifier:
+            pass
+        return super().validate(attrs)
 
 class CreatePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(

@@ -1,7 +1,9 @@
 from django.db import models
 from register.models import CustomUser
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
+from cloudinary.models import CloudinaryField
+import cloudinary
 
 
 class UserProfile(models.Model):
@@ -9,7 +11,7 @@ class UserProfile(models.Model):
     firstName = models.CharField(max_length=150)
     surname = models.CharField(max_length=150)
     dateOfBirth = models.DateField(blank=True,null=True)
-    displayPicture = models.ImageField(upload_to='media/dp', blank=True, null=True)
+    displayPicture = CloudinaryField('displayPicture')
     email = models.EmailField(blank=True, null=True)
     linkedln_url = models.CharField(max_length = 200, blank=True, null=True)
     twitter_url = models.CharField(max_length = 200, blank=True, null=True)
@@ -29,3 +31,8 @@ def create_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=CustomUser)
 def save_profile(sender, instance, **kwargs):
     instance.user_profile.save()
+
+@receiver(pre_delete, sender=UserProfile)
+def photo_delete(sender, instance, **kwargs):
+    cloudinary.uploader.destroy(instance.image.public_id)
+

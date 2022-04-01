@@ -16,16 +16,26 @@ class ProposalSerializer(serializers.ModelSerializer):
 
   
 class ListPropalSerializer(serializers.ModelSerializer):
+    firstname = serializers.CharField(source='user.user_profile.firstName',read_only=True) 
+    surname = serializers.CharField(source='user.user_profile.surname',read_only=True)
+    dp= serializers.ImageField(source="user.user_profile.displayPicture", read_only=True)
+    username = serializers.CharField(source='user.username',read_only=True)
+    task_title = serializers.CharField(source="task.title", read_only=True)
     class Meta:
         model = Proposal
         fields = [
             'user',
+            'firstname',
+            'surname',
+            'task_title',
             'task',
             'id',
             'proposal_description',
             'duration',
             'bid',
-            'created_at'
+            'created_at',
+            'dp',
+            'username'
         ]
 
 class JobSerializer(serializers.ModelSerializer):

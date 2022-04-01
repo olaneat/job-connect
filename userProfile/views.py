@@ -1,6 +1,8 @@
+from rest_framework.decorators import api_view
 from .models import UserProfile
+import cloudinary.uploader
 from .serializers import UserProfileSerializer
-from rest_framework.parsers import  MultiPartParser, FormParser
+from rest_framework.parsers import  MultiPartParser, FormParser, JSONParser
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
@@ -51,7 +53,24 @@ class RetrieveProfile(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     queryset = UserProfile.objects.all()
-    
+ 
 
+
+
+class UploadProfilePicture(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (
+        MultiPartParser,
+        JSONParser,
+    )
+    @staticmethod
+    def post(request):
+        file = request.data.get('picture')
+        upload_data = cloudinary.uploader.upload(file)
+        return Response({
+            'status': 'success',
+            'data' : upload_data,
+            'success': True
+        }, status=201)
 
 
