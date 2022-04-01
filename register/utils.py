@@ -6,6 +6,6 @@ class Utils:
     def send_mail(data):
         email = EmailMessage(
             subject=data['subject'], body=data['body'], to=[
-                data['to']]
+                data['recipient']]
         )
         email.send()
