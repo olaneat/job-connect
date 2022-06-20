@@ -15,7 +15,7 @@ from .apiViews import (
     DeleteProposalView,
     UpdateProposalView,
     UserProposalListView,
-    sendMail
+    SendMailNotificationAPI
 )
 from . import apiViews
 app_name = 'job'
@@ -35,5 +35,5 @@ urlpatterns = [
     path('<uuid:id>/proposal_list', GetUserProposalsView, name='proposa-list'),
     path('<uuid:id>/delete-proposal', DeleteProposalView.as_view(), name='delete-proposal'),
     path('<uuid:id>/update-proposal', UpdateProposalView.as_view(), name='update-proposal'),
-    path('send-notification', sendMail, name="send-notification")
+    path('notify-user', SendMailNotificationAPI.as_view(), name="send-notification")
 ]

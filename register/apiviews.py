@@ -80,7 +80,9 @@ class LoginAPIView(RetrieveAPIView):
                     'firstName': self.request.user.user_profile.firstName,
                     'surname': self.request.user.user_profile.surname,
                     'id': self.request.user.id,
-                    'skills': self.request.user.user_profile.skills
+                    'skills': self.request.user.user_profile.skills,
+                    'email': self.request.user.email,
+                    
 
                 }
                 status_code = status.HTTP_200_OK

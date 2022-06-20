@@ -63,50 +63,6 @@ class JobSerializer(serializers.ModelSerializer):
                 ]
     
     
-    
-    '''
-    
-    
-    
-    
-    '''
-
-'''
-class JobSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username', read_only=True )
-    user_id = serializers.CharField(source='user.id', read_only=True)
-    proposal = serializers.StringRelatedField(many=True, read_only=True)     
-    class Meta:
-        model = JobPost
-        fields = [
-                    'user',
-                    'user_id',
-                    'id', 
-                    'proposal',
-                    'title', 
-                    'description', 
-                    'budget', 
-                    'budget_type',
-                    'deadline',
-                    'location',
-                    'category',
-                    'sub_category',
-                    'created_on'
-                ]
-
-
-class JobSearchSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.username',    read_only=True )
-    class Meta:
-        model = JobPost
-        fields = ['user', 'id', 'title', 'description', 'budget', 'deadline']
-
-
-
-
-
-'''
-
 
 class SavedJobSerializer(serializers.ModelSerializer):
     user_id = serializers.CharField(source="user.id", read_only=True)
@@ -119,3 +75,7 @@ class SavedJobSerializer(serializers.ModelSerializer):
             'user',
             'title'
         ]
+
+class SendNotificationSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255)
+    fields = ['email']

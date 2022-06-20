@@ -4,7 +4,7 @@ import cloudinary.uploader
 from .serializers import UserProfileSerializer
 from rest_framework.parsers import  MultiPartParser, FormParser, JSONParser
 from rest_framework import generics
-from rest_framework import status
+from rest_framework import status, permissions 
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
@@ -13,7 +13,7 @@ from rest_framework.response import Response
 class createProfileView(generics.CreateAPIView):
     queryset = UserProfile.objects.all()
     serializer_class   = UserProfileSerializer
-    permission_classes= [IsAuthenticated]
+    permission_classes= [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self,request, *args, **kwargs):
@@ -44,21 +44,21 @@ class UpdateProfile(generics.UpdateAPIView):
     lookup_field = 'user_id'
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
-    permissions_classes = [IsAuthenticatedOrReadOnly]
+    permissions_classes = [permissions.IsAuthenticated]
 
 
 
 class RetrieveProfile(generics.RetrieveAPIView):
     lookup_field = 'user_id'
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = UserProfile.objects.all()
  
 
 
 
 class UploadProfilePicture(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = (
         MultiPartParser,
         JSONParser,

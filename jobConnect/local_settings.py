@@ -32,8 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     "corsheaders",
-    "whitenoise.runserver_nostatic",
-    'webpush',
 
     'register',
     'userProfile',
@@ -81,7 +79,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'LOCALHOST',
-        'NAME':  'job_connect',
+        'NAME':  'product_job_connect',
         'USERNAME': os.environ.get('DB_USERNAME'),
         'PASSWORD': os.environ.get('DB_PASSWORD')
     }
@@ -120,7 +118,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:4200","http://localhost:7000", ]
+CORS_ALLOWED_ORIGINS = ["http://localhost:4200", ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -190,12 +188,11 @@ JWT_AUTH = {
 }
 
 
-PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
 STATIC_URL = '/static/'
-STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 cloudinary.config(
@@ -208,10 +205,3 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-
-WEBPUSH_SETTINGS = {
-   "VAPID_PUBLIC_KEY":os.environ.get('VAPID_PUBLIC_KEY'),
-   "VAPID_PRIVATE_KEY": os.environ.get('VAPID_PRIVATE_KEY'),
-   "VAPID_ADMIN_EMAIL": os.environ.get('EMAIL_HOST_USER')
-}

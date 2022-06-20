@@ -3,14 +3,26 @@ from rest_framework import filters
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django.http import Http404, HttpResponse
-from .serializers import JobSerializer, SavedJobSerializer, ProposalSerializer, ListPropalSerializer
+from django.http.response import JsonResponse, HttpResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from webpush import send_user_notification
+import json
+
+from .serializers import (JobSerializer, 
+        SavedJobSerializer, 
+        ProposalSerializer, 
+        ListPropalSerializer,
+        SendNotificationSerializer
+    )
 from rest_framework import generics
 from rest_framework import permissions
 from utils import Utils
 from rest_framework import status
 from rest_framework.response import Response
 from register.models import CustomUser
-
 from job import serializers
 
 
@@ -214,18 +226,18 @@ def GetUserProposalsView(request, id):
     return Response(res)
 
 
-@api_view(['POST'])
-def sendMail(request):
-    if request.method == 'POST':
-        email = request.data['recieptient']
+class SendMailNotificationAPI(generics.GenericAPIView):
+    serializer_class = SendNotificationSerializer
+    def post(self, request):
+        email = request.data['email']
         if CustomUser.objects.filter(email=email).exists():
             user = CustomUser.objects.get(email=email)
             subject = 'Proposal Accepted'
             title = request.data['title']
             body = 'Congrats', user.user_profile.firstName, user.user_profile.surname,  \
-                'Your Proposal', title,  \
-                'for the  Has Been accepted'
-            
+                'Your proposal for the', title,  \
+                'project has been accepted'
+                
             data = {
                 'recieptient':user.email,
                 'subject': subject,
@@ -238,3 +250,32 @@ def sendMail(request):
                 'status': status.HTTP_200_OK,
             }
             return Response(res)
+
+
+
+@require_POST
+@csrf_exempt
+def send_noification(request):
+    try:
+        body = request.data,
+        data = json.loads(body)
+
+        if 'head' not in data or 'body' not in data or 'id' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+        
+        user_id = data['id']
+        user = get_object_or_404(CustomUser, id=user_id)
+        payload = {"head":data['head'], "body":data['body']}
+        send_user_notification(user=user, payload=payload, ttl=1000)
+
+        res = {
+            'msg':'Notification Sent successfully',
+            'status': status.HTTP_200_OK,
+        }
+        return Response(res)
+    except TypeError:
+        res = {
+            'msg':'Error Occurs',
+            'status': status.HTTP_500_BAD_REQUEST
+        }
+        return Response(res)
