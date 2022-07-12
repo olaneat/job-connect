@@ -33,6 +33,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'surname',
             'subSkills',
             'dateOfBirth',
+            'bvn',
             'categories'
         )
     

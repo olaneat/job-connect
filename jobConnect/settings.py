@@ -4,6 +4,7 @@ from pathlib import Path
 import django_heroku
 import cloudinary
 import os
+from cryptography.fernet import Fernet
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -215,3 +216,7 @@ WEBPUSH_SETTINGS = {
    "VAPID_PRIVATE_KEY": os.environ.get('VAPID_PRIVATE_KEY'),
    "VAPID_ADMIN_EMAIL": os.environ.get('EMAIL_HOST_USER')
 }
+
+
+key = Fernet.generate_key()
+ENCRYPTION_KEY = key

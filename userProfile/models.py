@@ -22,6 +22,7 @@ class UserProfile(models.Model):
     skills = models.CharField(max_length=255, blank=True, null=True)
     subSkills = models.TextField(blank=True, null=True)
     educationLevel = models.CharField(max_length=150, blank=True, null=True)
+    bvn = models.CharField(blank=True, null=True, max_length=250)
 
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender, instance, created, **kwargs):

@@ -41,7 +41,6 @@ class CreateJobPost(generics.CreateAPIView):
         )
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
         res = {
             'message': 'Job Post Successfully Created',
             'status': status.HTTP_201_CREATED,
@@ -144,18 +143,22 @@ def getUserTaskList(request, id):
 
 
 
+class ListSavedTasksAPIView(generics.ListAPIView):
+    serializer_class = SavedJobSerializer
+    permissions = [permissions.IsAuthenticated]
+    queryset = SaveJobs.objects.all()
 
 @api_view(['GET'])
-def ListSavedJobView(request):
+def ListSavedJobView(request, id):
     if request.method == 'GET':
-        id = request.user.id
+        user_id = id
         print(request.user)
         tasks = SaveJobs.objects.all()
-        serializer = SavedJobSerializer(tasks, many=True)
+        serializers = SavedJobSerializer()
         res = {
             'msg': 'data fetched successfully',
             'status': status.HTTP_200_OK,
-            'serializer' : serializer.data
+            'serializer' : serializers.data
         }
 
         return Response(res)
@@ -174,8 +177,23 @@ class SaveJobView(generics.CreateAPIView):
     serializer_class = SavedJobSerializer
     queryset =  SaveJobs.objects.all()
 
+    def post(self, request, *args, **kwargs):
+        serializer = SavedJobSerializer(data=request.data)
+        user = request.user
+        if serializer.is_valid(raise_exception=True):
+
+            serializer.save(user=user)
+            res = {
+                'message': 'Job Post Successfully Saved',
+                'status': status.HTTP_200_OK,
+                'data': serializer.data 
+            }
+            return Response(res)
+        else: 
+            return Response('err', serializer.error, status=400)
 
 
+    '''
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
             data=request.data
@@ -194,7 +212,7 @@ class SaveJobView(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user_id=self.request.user.id)
 
-
+    '''
 
 
 class DeleteProposalView(generics.DestroyAPIView):
